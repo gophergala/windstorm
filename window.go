@@ -7,14 +7,21 @@ import (
 type Window struct {
 	width, height int
 	title         string
+	cWin          cWindow
 }
 
 func NewWindow(width, height int, title string) (Window, error) {
 
 	var window Window
+	var err error
 
 	if width <= 0 || height <= 0 {
 		return Window{}, errors.New("invalid window size attributes")
+	}
+
+	window.cWin, err = cNewWindow(width, height, title)
+	if err != nil {
+		return Window{}, errors.New("unable to create window")
 	}
 
 	window.width = width
@@ -37,4 +44,18 @@ func (window *Window) Height() int {
 func (window *Window) Title() string {
 
 	return window.title
+}
+
+func (window *Window) Show() error {
+
+	err := cShowWindow(window.cWin)
+
+	return err
+}
+
+func (window *Window) UpdateEvents() error {
+
+	err := cUpdateEvents(window.cWin)
+
+	return err
 }

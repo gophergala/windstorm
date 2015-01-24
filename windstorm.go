@@ -3,7 +3,7 @@ package windstorm
 
 func init() {
 
-	err := WingolInit()
+	err := cInit()
 	if err != nil {
 		panic(err)
 	}
