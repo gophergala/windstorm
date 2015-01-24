@@ -102,3 +102,8 @@ void WindstormCloseWindow(WindstormWindow window) {
 
 	errno = 0;
 }
+
+void WindstormStop() {
+
+	XCloseDisplay(display);
+}

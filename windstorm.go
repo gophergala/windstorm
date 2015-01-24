@@ -8,3 +8,8 @@ func init() {
 		panic(err)
 	}
 }
+
+func Stop() {
+
+	cStop()
+}

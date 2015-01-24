@@ -10,6 +10,7 @@ extern void WindstormShowWindow(WindstormWindow);
 extern void WindstormHideWindow(WindstormWindow);
 extern void WindstormUpdateEvents(WindstormWindow);
 extern void WindstormCloseWindow(WindstormWindow);
+extern void WindstormStop();
 
 extern char *errorMsg;
 
@@ -81,4 +82,9 @@ func cCloseWindow(window cWindow) error {
 	}
 
 	return nil
+}
+
+func cStop() {
+
+	C.WindstormStop()
 }
