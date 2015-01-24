@@ -53,6 +53,13 @@ func (window *Window) Show() error {
 	return err
 }
 
+func (window *Window) Hide() error {
+
+	err := cHideWindow(window.cWin)
+
+	return err
+}
+
 func (window *Window) UpdateEvents() error {
 
 	err := cUpdateEvents(window.cWin)

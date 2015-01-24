@@ -64,6 +64,13 @@ void WindstormShowWindow(WindstormWindow window) {
 	errno = 0;
 }
 
+void WindstormHideWindow(WindstormWindow window) {
+
+	XUnmapWindow(display, window);
+
+	errno = 0;
+}
+
 int predicateFunc(Display* d, XEvent* e, XPointer p) {
 
 	return True;

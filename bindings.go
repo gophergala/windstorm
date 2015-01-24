@@ -7,6 +7,7 @@ typedef Window WindstormWindow;
 extern void WindstormInit();
 extern WindstormWindow WindstormNewWindow(int, int, char*);
 extern void WindstormShowWindow(WindstormWindow);
+extern void WindstormHideWindow(WindstormWindow);
 extern void WindstormUpdateEvents(WindstormWindow);
 
 */
@@ -41,6 +42,17 @@ func cShowWindow(window cWindow) error {
 
 	if err != nil {
 		return errors.New("failed to show window")
+	}
+
+	return nil
+}
+
+func cHideWindow(window cWindow) error {
+
+	_, err := C.WindstormHideWindow(C.WindstormWindow(window))
+
+	if err != nil {
+		return errors.New("failed to hide window")
 	}
 
 	return nil
