@@ -10,6 +10,7 @@ int screen;
 GLint glAttribs[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None };
 XSetWindowAttributes winAttribs;
 XVisualInfo *vi;
+char *errorMsg;
 
 typedef Window WindstormWindow;
 
@@ -24,6 +25,7 @@ void WindstormInit() {
 
 	display = XOpenDisplay(NULL);
 	if(display == NULL) {
+		errorMsg = "could not connect to X server";
 		errno = -1;
 		return;
 	}
@@ -35,6 +37,7 @@ void WindstormInit() {
 
 	vi = glXChooseVisual(display, 0, glAttribs);
 	if(vi == NULL) {
+		errorMsg = "could not find proper GLX visual";
 		errno = -1;
 		return;
 	}
