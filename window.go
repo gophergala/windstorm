@@ -60,6 +60,13 @@ func (window *Window) Hide() error {
 	return err
 }
 
+func (window *Window) Close() error {
+
+	err := cCloseWindow(window.cWin)
+
+	return err
+}
+
 func (window *Window) UpdateEvents() error {
 
 	err := cUpdateEvents(window.cWin)

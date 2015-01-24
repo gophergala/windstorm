@@ -92,3 +92,10 @@ int WindstormUpdateEvents(WindstormWindow window) {
 
 	return 0;
 }
+
+void WindstormCloseWindow(WindstormWindow window) {
+
+	XDestroyWindow(display, window);
+
+	errno = 0;
+}

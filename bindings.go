@@ -9,6 +9,7 @@ extern WindstormWindow WindstormNewWindow(int, int, char*);
 extern void WindstormShowWindow(WindstormWindow);
 extern void WindstormHideWindow(WindstormWindow);
 extern void WindstormUpdateEvents(WindstormWindow);
+extern void WindstormCloseWindow(WindstormWindow);
 
 */
 import "C"
@@ -64,6 +65,17 @@ func cUpdateEvents(window cWindow) error {
 
 	if err != nil {
 		return errors.New("could not update events")
+	}
+
+	return nil
+}
+
+func cCloseWindow(window cWindow) error {
+
+	_, err := C.WindstormCloseWindow(C.WindstormWindow(window))
+
+	if err != nil {
+		return errors.New("could not close window")
 	}
 
 	return nil
