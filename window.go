@@ -10,7 +10,8 @@ type Window struct {
 	cWin          cWindow
 	cCont         cContext
 
-	OnResize chan ResizeEvent
+	OnResize   chan ResizeEvent
+	OnKeyboard chan KeyboardEvent
 }
 
 var windows map[cWindow]*Window
@@ -34,6 +35,7 @@ func NewWindow(width, height int, title string) (Window, error) {
 	window.title = title
 
 	window.OnResize = make(chan ResizeEvent, 256)
+	window.OnKeyboard = make(chan KeyboardEvent, 256)
 
 	return window, nil
 }
@@ -88,6 +90,7 @@ func (window *Window) UpdateEvents() error {
 	for stop := false; !stop; {
 		select {
 		case <-window.OnResize:
+		case <-window.OnKeyboard:
 		default:
 			stop = true
 		}
@@ -127,6 +130,14 @@ func (window *Window) onResize(width, height int) {
 
 	select {
 	case window.OnResize <- ResizeEvent{Width: width, Height: height}:
+	default:
+	}
+}
+
+func (window *Window) onKeyboard(key int, action Action) {
+
+	select {
+	case window.OnKeyboard <- KeyboardEvent{Key: key, Action: action}:
 	default:
 	}
 }

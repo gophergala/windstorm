@@ -7,7 +7,7 @@
 Display *display;
 Window rootWindow;
 int screen;
-long eventMask = ExposureMask;
+long eventMask = KeyPressMask | KeyReleaseMask;
 GLint glAttribs[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None };
 XSetWindowAttributes winAttribs;
 XVisualInfo *vi;
@@ -15,6 +15,9 @@ char *errorMsg;
 
 typedef Window WindstormWindow;
 typedef GLXContext WindstormContext;
+
+const int Press = 1;
+const int Release = 2;
 
 int errorHandler(Display *display, XErrorEvent *event) {
 
@@ -82,15 +85,52 @@ int predicateFunc(Display* d, XEvent* e, XPointer p) {
 	return True;
 }
 
+Bool peekEvents(XEvent *event) {
+
+	if(XPending(display) > 0) {
+		XPeekEvent(display, event);
+		return True;
+	}
+
+	return False;
+}
+
 void WindstormUpdateEvents(WindstormWindow window) {
 
 	XEvent event;
 
+	int lastKeyReleased = -1;
+	int keyVal;
 	while(XCheckIfEvent(display, &event, predicateFunc, NULL)) {
 		switch(event.type) {
 		case ClientMessage:
 			XDestroyWindow(display, window);
+			lastKeyReleased = -1;
 			break;
+		case KeyPress:
+			// The lastKeyReleased value will be the value of the last key
+			// released if a KeyRelease event was the last thing to happen.
+			// If that value is the same as the value of the KeyPress event,
+			// the KeyPress event will be ignored to prevent the behavior
+			// described above.
+			keyVal = XLookupKeysym(&event.xkey, 0);
+			if(keyVal != lastKeyReleased) {
+				keyboardEvent(keyVal, Press, window);
+			}
+			break;
+		case KeyRelease:
+			// X11 sends "key held down" events in the form of a key release
+			// event and a key press event following directly after. In
+			// order to avoid this, the next event has to be reviewed to see if
+			// it follows this pattern.
+			keyVal = XLookupKeysym(&event.xkey, 0);
+			XEvent nextEvent;
+			if(peekEvents(&nextEvent) == True && nextEvent.type == KeyPress && XLookupKeysym(&nextEvent.xkey, 0) == keyVal) {
+				//keyboardEvent(keyVal, Hold, window);
+			} else {
+				keyboardEvent(keyVal, Release, window);
+			}
+			lastKeyReleased = keyVal;
 		}
 	}
 

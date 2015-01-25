@@ -48,6 +48,14 @@ func resizeEvent(width, height int, window C.WindstormWindow) {
 	}
 }
 
+//export keyboardEvent
+func keyboardEvent(key int, action int, window C.WindstormWindow) {
+
+	if obj, ok := windows[cWindow(window)]; ok {
+		obj.onKeyboard(key, Action(action))
+	}
+}
+
 func cNewWindow(width, height int, title string) (cWindow, error) {
 
 	window, err := C.WindstormNewWindow(C.int(width), C.int(height), C.CString(title))
