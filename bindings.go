@@ -54,7 +54,7 @@ func resizeEvent(width, height int, window C.WindstormWindow) {
 func keyboardEvent(key int, action int, window C.WindstormWindow) {
 
 	if obj, ok := windows[cWindow(window)]; ok {
-		obj.onKeyboard(key, Action(action))
+		obj.onKeyboard(Key(key), Action(action))
 	}
 }
 

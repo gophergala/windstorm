@@ -6,7 +6,7 @@ type ResizeEvent struct {
 }
 
 type KeyboardEvent struct {
-	Key    int
+	Key    Key
 	Action Action
 }
 

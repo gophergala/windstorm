@@ -10,7 +10,7 @@ type Window struct {
 	cWin          cWindow
 	cCont         cContext
 
-	keyStates         map[int]Action
+	keyStates         map[Key]Action
 	mouseX, mouseY    int
 	mouseButtonStates map[MouseButton]Action
 	focused           bool
@@ -42,7 +42,7 @@ func NewWindow(width, height int, title string) (Window, error) {
 	window.height = height
 	window.title = title
 
-	window.keyStates = make(map[int]Action)
+	window.keyStates = make(map[Key]Action)
 	window.mouseButtonStates = make(map[MouseButton]Action)
 
 	window.OnResize = make(chan ResizeEvent, 256)
@@ -125,7 +125,7 @@ func (window *Window) UpdateEvents() error {
 	return err
 }
 
-func (window *Window) KeyState(key int) Action {
+func (window *Window) KeyState(key Key) Action {
 
 	return window.keyStates[key]
 }
@@ -178,7 +178,7 @@ func (window *Window) onResize(width, height int) {
 	}
 }
 
-func (window *Window) onKeyboard(key int, action Action) {
+func (window *Window) onKeyboard(key Key, action Action) {
 
 	window.keyStates[key] = action
 
