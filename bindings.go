@@ -104,6 +104,17 @@ func cHideWindow(window cWindow) error {
 	return nil
 }
 
+func cSetWindowTitle(title string, window cWindow) error {
+
+	_, err := C.WindstormSetWindowTitle(C.CString(title), C.WindstormWindow(window))
+
+	if err != nil {
+		return errors.New(C.GoString(C.errorMsg))
+	}
+
+	return nil
+}
+
 func cUpdateEvents(window cWindow) error {
 
 	_, err := C.WindstormUpdateEvents(C.WindstormWindow(window))

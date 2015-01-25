@@ -80,6 +80,13 @@ void WindstormHideWindow(WindstormWindow window) {
 	errno = 0;
 }
 
+void WindstormSetWindowTitle(char *title, WindstormWindow window) {
+
+	XStoreName(display, window, title);
+
+	errno = 0;
+}
+
 int predicateFunc(Display* d, XEvent* e, XPointer p) {
 
 	return True;

@@ -95,6 +95,11 @@ func (window *Window) SetRecievesEvents(recieves bool) {
 	}
 }
 
+func (window *Window) SetTitle(title string) error {
+
+	return cSetWindowTitle(title, window.cWin)
+}
+
 func (window *Window) UpdateEvents() error {
 
 	for stop := false; !stop; {
