@@ -15,13 +15,16 @@ type Window struct {
 	mouseButtonStates map[MouseButton]Action
 	focused           bool
 	shouldClose       bool
+	mouseInWindow     bool
 
-	OnClose       chan CloseEvent
-	OnResize      chan ResizeEvent
-	OnKeyboard    chan KeyboardEvent
-	OnMouseMove   chan MouseMoveEvent
-	OnMouseButton chan MouseButtonEvent
-	OnFocus       chan FocusEvent
+	OnClose            chan CloseEvent
+	OnResize           chan ResizeEvent
+	OnKeyboard         chan KeyboardEvent
+	OnMouseMove        chan MouseMoveEvent
+	OnMouseButton      chan MouseButtonEvent
+	OnFocus            chan FocusEvent
+	OnMouseEnterWindow chan MouseEnterWindowEvent
+	OnMouseLeaveWindow chan MouseLeaveWindowEvent
 }
 
 var windows map[cWindow]*Window
@@ -53,6 +56,8 @@ func NewWindow(width, height int, title string) (Window, error) {
 	window.OnMouseMove = make(chan MouseMoveEvent, 256)
 	window.OnMouseButton = make(chan MouseButtonEvent, 256)
 	window.OnFocus = make(chan FocusEvent, 256)
+	window.OnMouseEnterWindow = make(chan MouseEnterWindowEvent, 256)
+	window.OnMouseLeaveWindow = make(chan MouseLeaveWindowEvent, 256)
 
 	return window, nil
 }
@@ -70,6 +75,11 @@ func (window *Window) Height() int {
 func (window *Window) Title() string {
 
 	return window.title
+}
+
+func (window *Window) MouseInWindow() bool {
+
+	return window.mouseInWindow
 }
 
 func (window *Window) Show() error {
@@ -116,8 +126,12 @@ func (window *Window) UpdateEvents() error {
 
 	for stop := false; !stop; {
 		select {
+		case <-window.OnClose:
 		case <-window.OnResize:
 		case <-window.OnKeyboard:
+		case <-window.OnMouseMove:
+		case <-window.OnMouseButton:
+		case <-window.OnFocus:
 		default:
 			stop = true
 		}
@@ -211,6 +225,8 @@ func (window *Window) onMouseMove(x, y int) {
 	window.mouseX = x
 	window.mouseY = y
 
+	window.mouseInWindow = true
+
 	select {
 	case window.OnMouseMove <- MouseMoveEvent{X: x, Y: y}:
 	default:
@@ -233,6 +249,26 @@ func (window *Window) onFocus(focused bool) {
 
 	select {
 	case window.OnFocus <- FocusEvent{Focused: focused}:
+	default:
+	}
+}
+
+func (window *Window) onMouseEnterWindow(x, y int) {
+
+	window.mouseInWindow = true
+
+	select {
+	case window.OnMouseEnterWindow <- MouseEnterWindowEvent{X: x, Y: y}:
+	default:
+	}
+}
+
+func (window *Window) onMouseLeaveWindow() {
+
+	window.mouseInWindow = false
+
+	select {
+	case window.OnMouseLeaveWindow <- MouseLeaveWindowEvent{}:
 	default:
 	}
 }

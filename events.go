@@ -26,3 +26,11 @@ type MouseButtonEvent struct {
 type FocusEvent struct {
 	Focused bool
 }
+
+type MouseLeaveWindowEvent struct {
+}
+
+type MouseEnterWindowEvent struct {
+	X int
+	Y int
+}

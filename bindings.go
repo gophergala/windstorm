@@ -90,6 +90,22 @@ func focusEvent(focused int, window C.WindstormWindow) {
 	}
 }
 
+//export mouseEnterWindowEvent
+func mouseEnterWindowEvent(x, y int, window C.WindstormWindow) {
+
+	if obj, ok := windows[cWindow(window)]; ok {
+		obj.onMouseEnterWindow(x, y)
+	}
+}
+
+//export mouseLeaveWindowEvent
+func mouseLeaveWindowEvent(window C.WindstormWindow) {
+
+	if obj, ok := windows[cWindow(window)]; ok {
+		obj.onMouseLeaveWindow()
+	}
+}
+
 func cNewWindow(width, height int, title string) (cWindow, error) {
 
 	window, err := C.WindstormNewWindow(C.int(width), C.int(height), C.CString(title))

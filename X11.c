@@ -8,7 +8,7 @@ Display *display;
 Window rootWindow;
 int screen;
 long eventMask = KeyPressMask | KeyReleaseMask | PointerMotionMask | FocusChangeMask |
-	ButtonPressMask | ButtonReleaseMask;
+	ButtonPressMask | ButtonReleaseMask | EnterWindowMask | LeaveWindowMask;
 GLint glAttribs[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None };
 XSetWindowAttributes winAttribs;
 XVisualInfo *vi;
@@ -125,7 +125,6 @@ void WindstormUpdateEvents(WindstormWindow window) {
 	while(XCheckIfEvent(display, &event, predicateFunc, NULL)) {
 		switch(event.type) {
 		case ClientMessage:
-			printf("Close Event\n");
 			closeEvent(window);
 			break;
 		case KeyPress:
@@ -172,6 +171,12 @@ void WindstormUpdateEvents(WindstormWindow window) {
 		case FocusOut:
 			focusEvent(0, window);
 			lastKeyReleased = -1;
+			break;
+		case EnterNotify:
+			mouseEnterWindowEvent(event.xcrossing.x, event.xcrossing.y, window);
+			break;
+		case LeaveNotify:
+			mouseLeaveWindowEvent(window);
 			break;
 		}
 	}
