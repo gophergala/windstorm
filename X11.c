@@ -126,7 +126,13 @@ void WindstormMakeContextCurrent(WindstormWindow window, WindstormContext contex
 	}
 
 	errno = 0;
-	return;
+}
+
+void WindstormSwapBuffers(WindstormWindow window) {
+
+	glXSwapBuffers(display, window);
+
+	errno = 0;
 }
 
 void WindstormStop() {

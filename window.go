@@ -89,3 +89,10 @@ func (window *Window) MakeContextCurrent() error {
 
 	return err
 }
+
+func (window *Window) SwapBuffers() error {
+
+	err := cSwapBuffers(window.cWin)
+
+	return err
+}
