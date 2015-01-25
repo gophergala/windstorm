@@ -10,6 +10,8 @@ extern void WindstormInit();
 extern WindstormWindow WindstormNewWindow(int, int, char*);
 extern void WindstormShowWindow(WindstormWindow);
 extern void WindstormHideWindow(WindstormWindow);
+extern void WindstormSetWindowTitle(char*, WindstormWindow);
+extern void WindstormResizeWindow(int, int, WindstormWindow);
 extern void WindstormUpdateEvents(WindstormWindow);
 extern void WindstormCloseWindow(WindstormWindow);
 extern WindstormContext WindstormCreateContext();
@@ -107,6 +109,21 @@ func cHideWindow(window cWindow) error {
 func cSetWindowTitle(title string, window cWindow) error {
 
 	_, err := C.WindstormSetWindowTitle(C.CString(title), C.WindstormWindow(window))
+
+	if err != nil {
+		return errors.New(C.GoString(C.errorMsg))
+	}
+
+	return nil
+}
+
+func cResizeWindow(width, height int, window cWindow) error {
+
+	if width <= 0 || height <= 0 {
+		return errors.New("invalid window size")
+	}
+
+	_, err := C.WindstormResizeWindow(C.int(width), C.int(height), C.WindstormWindow(window))
 
 	if err != nil {
 		return errors.New(C.GoString(C.errorMsg))

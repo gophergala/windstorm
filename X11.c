@@ -87,6 +87,13 @@ void WindstormSetWindowTitle(char *title, WindstormWindow window) {
 	errno = 0;
 }
 
+void WindstormResizeWindow(int width, int height, WindstormWindow window) {
+
+	XResizeWindow(display, window, width, height);
+
+	errno = 0;
+}
+
 int predicateFunc(Display* d, XEvent* e, XPointer p) {
 
 	return True;

@@ -100,6 +100,11 @@ func (window *Window) SetTitle(title string) error {
 	return cSetWindowTitle(title, window.cWin)
 }
 
+func (window *Window) SetSize(width, height int) error {
+
+	return cResizeWindow(width, height, window.cWin)
+}
+
 func (window *Window) UpdateEvents() error {
 
 	for stop := false; !stop; {
