@@ -10,10 +10,12 @@ type Window struct {
 	cWin          cWindow
 	cCont         cContext
 
-	keyStates map[int]Action
+	keyStates      map[int]Action
+	mouseX, mouseY int
 
-	OnResize   chan ResizeEvent
-	OnKeyboard chan KeyboardEvent
+	OnResize    chan ResizeEvent
+	OnKeyboard  chan KeyboardEvent
+	OnMouseMove chan MouseMoveEvent
 }
 
 var windows map[cWindow]*Window
@@ -40,6 +42,7 @@ func NewWindow(width, height int, title string) (Window, error) {
 
 	window.OnResize = make(chan ResizeEvent, 256)
 	window.OnKeyboard = make(chan KeyboardEvent, 256)
+	window.OnMouseMove = make(chan MouseMoveEvent, 256)
 
 	return window, nil
 }
@@ -110,6 +113,11 @@ func (window *Window) KeyState(key int) Action {
 	return window.keyStates[key]
 }
 
+func (window *Window) MousePosition() (int, int) {
+
+	return window.mouseX, window.mouseY
+}
+
 func (window *Window) CreateContext() error {
 
 	var err error
@@ -149,6 +157,17 @@ func (window *Window) onKeyboard(key int, action Action) {
 
 	select {
 	case window.OnKeyboard <- KeyboardEvent{Key: key, Action: action}:
+	default:
+	}
+}
+
+func (window *Window) onMouseMove(x, y int) {
+
+	window.mouseX = x
+	window.mouseY = y
+
+	select {
+	case window.OnMouseMove <- MouseMoveEvent{X: x, Y: y}:
 	default:
 	}
 }

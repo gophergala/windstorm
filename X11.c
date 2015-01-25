@@ -7,7 +7,7 @@
 Display *display;
 Window rootWindow;
 int screen;
-long eventMask = KeyPressMask | KeyReleaseMask;
+long eventMask = KeyPressMask | KeyReleaseMask | PointerMotionMask;
 GLint glAttribs[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None };
 XSetWindowAttributes winAttribs;
 XVisualInfo *vi;
@@ -97,6 +97,9 @@ Bool peekEvents(XEvent *event) {
 
 void WindstormUpdateEvents(WindstormWindow window) {
 
+	XWindowAttributes attribs;
+	XGetWindowAttributes(display, window, &attribs);
+
 	XEvent event;
 
 	int lastKeyReleased = -1;
@@ -131,11 +134,10 @@ void WindstormUpdateEvents(WindstormWindow window) {
 				keyboardEvent(keyVal, Release, window);
 			}
 			lastKeyReleased = keyVal;
+		case MotionNotify:
+			mouseMoveEvent(event.xmotion.x, attribs.height - event.xmotion.y, window);
 		}
 	}
-
-	XWindowAttributes attribs;
-	XGetWindowAttributes(display, window, &attribs);
 
 	// Instead of using a ResizeRedirectMask to check if the window size has
 	// changed, this check is done manually. Using ResizeRedirectMask keeps the
