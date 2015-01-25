@@ -11,6 +11,8 @@ func init() {
 	}
 }
 
+// Stop stops the library. This should only be called if no more Windstorm
+// tasks will be done for the duration of the program.
 func Stop() {
 
 	cStop()

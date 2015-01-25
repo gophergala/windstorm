@@ -4,6 +4,10 @@ import (
 	"errors"
 )
 
+// Window is an object representing a window with an OpenGL context inside of
+// it. Most operations are done through a Window object. OnX channels are
+// exposed through this object that may be read for user input. These channels
+// should never be written to.
 type Window struct {
 	width, height int
 	title         string
@@ -29,6 +33,11 @@ type Window struct {
 
 var windows map[cWindow]*Window
 
+// NewWindow creates a new Window object with the given width, height, and
+// title. Width and height attributes must be above zero. The window will not
+// immediately appear on screen. The Show method must be called first. The
+// window will also not capture user input by default. The SetRetrievesInput
+// method must be called first.
 func NewWindow(width, height int, title string) (Window, error) {
 
 	var window Window
@@ -62,26 +71,32 @@ func NewWindow(width, height int, title string) (Window, error) {
 	return window, nil
 }
 
+// Width returns the current width of the window in pixels.
 func (window *Window) Width() int {
 
 	return window.width
 }
 
+// Height returns the current height of the window in pixels.
 func (window *Window) Height() int {
 
 	return window.height
 }
 
+// Title returns the current title of the window.
 func (window *Window) Title() string {
 
 	return window.title
 }
 
+// MouseInWindow returns true if the cursor currently resides in the window
+// space.
 func (window *Window) MouseInWindow() bool {
 
 	return window.mouseInWindow
 }
 
+// Show displays the window on screen.
 func (window *Window) Show() error {
 
 	err := cShowWindow(window.cWin)
@@ -89,6 +104,7 @@ func (window *Window) Show() error {
 	return err
 }
 
+// Hide stops the window from being displayed on screen, but does not close it.
 func (window *Window) Hide() error {
 
 	err := cHideWindow(window.cWin)
@@ -96,6 +112,9 @@ func (window *Window) Hide() error {
 	return err
 }
 
+// Close closes the window. Drawing should not be performed on it's context
+// after this method is called. User input will stop being fed to the window,
+// as well.
 func (window *Window) Close() error {
 
 	err := cCloseWindow(window.cWin)
@@ -103,6 +122,8 @@ func (window *Window) Close() error {
 	return err
 }
 
+// SetRecievesEvents toggles whether the window should recieve user input
+// events or not. The default value is false.
 func (window *Window) SetRecievesEvents(recieves bool) {
 
 	if recieves {
@@ -112,16 +133,20 @@ func (window *Window) SetRecievesEvents(recieves bool) {
 	}
 }
 
+// SetTitle sets the title of the window.
 func (window *Window) SetTitle(title string) error {
 
 	return cSetWindowTitle(title, window.cWin)
 }
 
+// SetSize sets the width and height of the window in pixels. Valid values
+// must be above zero.
 func (window *Window) SetSize(width, height int) error {
 
 	return cResizeWindow(width, height, window.cWin)
 }
 
+// UpdateEvents checks for new user input events.
 func (window *Window) UpdateEvents() error {
 
 	for stop := false; !stop; {
@@ -142,31 +167,38 @@ func (window *Window) UpdateEvents() error {
 	return err
 }
 
+// KeyState returns the current state of a Key.
 func (window *Window) KeyState(key Key) Action {
 
 	return window.keyStates[key]
 }
 
+// MousePosition returns the position of the cursor.
 func (window *Window) MousePosition() (int, int) {
 
 	return window.mouseX, window.mouseY
 }
 
+// MouseButtonState returns the state of a mouse button.
 func (window *Window) MouseButtonState(button MouseButton) Action {
 
 	return window.mouseButtonStates[button]
 }
 
+// InFocus returns true if the window is currently in focus.
 func (window *Window) InFocus() bool {
 
 	return window.focused
 }
 
+// ShouldClose returns true if the window has recieved a close request from
+// the user or the OS.
 func (window *Window) ShouldClose() bool {
 
 	return window.shouldClose
 }
 
+// CreateContext creates a new OpenGL context.
 func (window *Window) CreateContext() error {
 
 	var err error
@@ -175,6 +207,8 @@ func (window *Window) CreateContext() error {
 	return err
 }
 
+// MakeContextCurrent makes the window's context current. Future OpenGL draw
+// operations will be done on this context.
 func (window *Window) MakeContextCurrent() error {
 
 	err := cMakeContextCurrent(window.cWin, window.cCont)
@@ -182,6 +216,7 @@ func (window *Window) MakeContextCurrent() error {
 	return err
 }
 
+// SwapBuffers updates the display in the window.
 func (window *Window) SwapBuffers() error {
 
 	err := cSwapBuffers(window.cWin)

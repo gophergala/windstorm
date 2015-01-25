@@ -11,16 +11,20 @@ package windstorm
 */
 import "C"
 
+// Action is a constant type for key and button states.
 type Action int
 
+// Constants representing button and key states.
 const (
 	_ Action = iota
 	Press
 	Release
 )
 
+// MouseButton is a constant type for physical mouse buttons.
 type MouseButton int
 
+// Constants representing mouse buttons.
 const (
 	MouseButton1 = MouseButton(C.Button1)
 	MouseButton2 = MouseButton(C.Button2)
@@ -29,8 +33,10 @@ const (
 	MouseButton5 = MouseButton(C.Button5)
 )
 
+// Key is a constant type for physical keyboard keys.
 type Key int
 
+// Constants representing keyboard buttons.
 const (
 	KeySpace        = Key(C.XK_space)
 	KeyApostrophe   = Key(C.XK_apostrophe)
