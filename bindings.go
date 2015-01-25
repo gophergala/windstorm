@@ -66,6 +66,14 @@ func mouseMoveEvent(x, y int, window C.WindstormWindow) {
 	}
 }
 
+//export mouseButtonEvent
+func mouseButtonEvent(button int, action int, window C.WindstormWindow) {
+
+	if obj, ok := windows[cWindow(window)]; ok {
+		obj.onMouseButton(MouseButton(button), Action(action))
+	}
+}
+
 //export focusEvent
 func focusEvent(focused int, window C.WindstormWindow) {
 

@@ -15,6 +15,11 @@ type MouseMoveEvent struct {
 	Y int
 }
 
+type MouseButtonEvent struct {
+	Button MouseButton
+	Action Action
+}
+
 type FocusEvent struct {
 	Focused bool
 }

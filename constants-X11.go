@@ -5,6 +5,7 @@ package windstorm
 #define XK_3270
 #define XK_MISCELLANY
 #include <X11/keysymdef.h>
+#include <X11/Xlib.h>
 */
 import "C"
 
@@ -14,6 +15,16 @@ const (
 	_ Action = iota
 	Press
 	Release
+)
+
+type MouseButton int
+
+const (
+	MouseButton1 = MouseButton(C.Button1)
+	MouseButton2 = MouseButton(C.Button2)
+	MouseButton3 = MouseButton(C.Button3)
+	MouseButton4 = MouseButton(C.Button4)
+	MouseButton5 = MouseButton(C.Button5)
 )
 
 type Key int

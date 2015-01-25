@@ -7,7 +7,8 @@
 Display *display;
 Window rootWindow;
 int screen;
-long eventMask = KeyPressMask | KeyReleaseMask | PointerMotionMask | FocusChangeMask;
+long eventMask = KeyPressMask | KeyReleaseMask | PointerMotionMask | FocusChangeMask |
+	ButtonPressMask | ButtonReleaseMask;
 GLint glAttribs[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None };
 XSetWindowAttributes winAttribs;
 XVisualInfo *vi;
@@ -151,6 +152,12 @@ void WindstormUpdateEvents(WindstormWindow window) {
 			break;
 		case MotionNotify:
 			mouseMoveEvent(event.xmotion.x, attribs.height - event.xmotion.y, window);
+			break;
+		case ButtonPress:
+			mouseButtonEvent(event.xbutton.button, Press, window);
+			break;
+		case ButtonRelease:
+			mouseButtonEvent(event.xbutton.button, Release, window);
 			break;
 		case FocusIn:
 			focusEvent(1, window);

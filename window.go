@@ -10,14 +10,16 @@ type Window struct {
 	cWin          cWindow
 	cCont         cContext
 
-	keyStates      map[int]Action
-	mouseX, mouseY int
-	focused        bool
+	keyStates         map[int]Action
+	mouseX, mouseY    int
+	mouseButtonStates map[MouseButton]Action
+	focused           bool
 
-	OnResize    chan ResizeEvent
-	OnKeyboard  chan KeyboardEvent
-	OnMouseMove chan MouseMoveEvent
-	OnFocus     chan FocusEvent
+	OnResize      chan ResizeEvent
+	OnKeyboard    chan KeyboardEvent
+	OnMouseMove   chan MouseMoveEvent
+	OnMouseButton chan MouseButtonEvent
+	OnFocus       chan FocusEvent
 }
 
 var windows map[cWindow]*Window
@@ -41,10 +43,12 @@ func NewWindow(width, height int, title string) (Window, error) {
 	window.title = title
 
 	window.keyStates = make(map[int]Action)
+	window.mouseButtonStates = make(map[MouseButton]Action)
 
 	window.OnResize = make(chan ResizeEvent, 256)
 	window.OnKeyboard = make(chan KeyboardEvent, 256)
 	window.OnMouseMove = make(chan MouseMoveEvent, 256)
+	window.OnMouseButton = make(chan MouseButtonEvent, 256)
 	window.OnFocus = make(chan FocusEvent, 256)
 
 	return window, nil
@@ -131,6 +135,11 @@ func (window *Window) MousePosition() (int, int) {
 	return window.mouseX, window.mouseY
 }
 
+func (window *Window) MouseButtonState(button MouseButton) Action {
+
+	return window.mouseButtonStates[button]
+}
+
 func (window *Window) InFocus() bool {
 
 	return window.focused
@@ -186,6 +195,16 @@ func (window *Window) onMouseMove(x, y int) {
 
 	select {
 	case window.OnMouseMove <- MouseMoveEvent{X: x, Y: y}:
+	default:
+	}
+}
+
+func (window *Window) onMouseButton(button MouseButton, action Action) {
+
+	window.mouseButtonStates[button] = action
+
+	select {
+	case window.OnMouseButton <- MouseButtonEvent{Button: button, Action: action}:
 	default:
 	}
 }
