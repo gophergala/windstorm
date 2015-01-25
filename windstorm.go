@@ -3,6 +3,8 @@ package windstorm
 
 func init() {
 
+	windows = make(map[cWindow]*Window)
+
 	err := cInit()
 	if err != nil {
 		panic(err)

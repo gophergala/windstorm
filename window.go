@@ -11,6 +11,8 @@ type Window struct {
 	cCont         cContext
 }
 
+var windows map[cWindow]*Window
+
 func NewWindow(width, height int, title string) (Window, error) {
 
 	var window Window
@@ -68,6 +70,15 @@ func (window *Window) Close() error {
 	return err
 }
 
+func (window *Window) SetRecievesEvents(recieves bool) {
+
+	if recieves {
+		windows[window.cWin] = window
+	} else {
+		delete(windows, window.cWin)
+	}
+}
+
 func (window *Window) UpdateEvents() error {
 
 	err := cUpdateEvents(window.cWin)
@@ -95,4 +106,10 @@ func (window *Window) SwapBuffers() error {
 	err := cSwapBuffers(window.cWin)
 
 	return err
+}
+
+func (window *Window) onResize(width, height int) {
+
+	window.width = width
+	window.height = height
 }

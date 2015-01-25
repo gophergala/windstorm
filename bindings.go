@@ -36,6 +36,18 @@ func cInit() error {
 	return nil
 }
 
+//export resizeEvent
+func resizeEvent(width, height int, window C.WindstormWindow) {
+
+	if obj, ok := windows[cWindow(window)]; ok {
+		// This function is called with every event check on X11, so manually
+		// check to see if a change has indeed occurred.
+		if obj.width != width || obj.height != height {
+			obj.onResize(width, height)
+		}
+	}
+}
+
 func cNewWindow(width, height int, title string) (cWindow, error) {
 
 	window, err := C.WindstormNewWindow(C.int(width), C.int(height), C.CString(title))

@@ -7,6 +7,7 @@
 Display *display;
 Window rootWindow;
 int screen;
+long eventMask = ExposureMask;
 GLint glAttribs[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None };
 XSetWindowAttributes winAttribs;
 XVisualInfo *vi;
@@ -45,6 +46,7 @@ void WindstormInit() {
 
 	Colormap colorMap = XCreateColormap(display, rootWindow, vi->visual, AllocNone);
 	winAttribs.colormap = colorMap;
+	winAttribs.event_mask = eventMask;
 
 	errno = 0;
 }
@@ -52,7 +54,7 @@ void WindstormInit() {
 WindstormWindow WindstormNewWindow(int width, int height, char *title) {
 
 	Window window = XCreateWindow(display, rootWindow, 0, 0, width, height, 0,
-		vi->depth, InputOutput, vi->visual, CWColormap, &winAttribs);
+		vi->depth, InputOutput, vi->visual, CWColormap | CWEventMask, &winAttribs);
 
 	XSetStandardProperties(display, window, title, title, None, NULL, 0, NULL);
 
@@ -80,7 +82,7 @@ int predicateFunc(Display* d, XEvent* e, XPointer p) {
 	return True;
 }
 
-int WindstormUpdateEvents(WindstormWindow window) {
+void WindstormUpdateEvents(WindstormWindow window) {
 
 	XEvent event;
 
@@ -92,9 +94,18 @@ int WindstormUpdateEvents(WindstormWindow window) {
 		}
 	}
 
+	XWindowAttributes attribs;
+	XGetWindowAttributes(display, window, &attribs);
+
+	// Instead of using a ResizeRedirectMask to check if the window size has
+	// changed, this check is done manually. Using ResizeRedirectMask keeps the
+	// default behaviors from happening, which would then have to be emulated.
+	// TODO: Find a better way to do this.
+	resizeEvent(attribs.width, attribs.height, window);
+
 	errno = 0;
 
-	return 0;
+	return;
 }
 
 void WindstormCloseWindow(WindstormWindow window) {
