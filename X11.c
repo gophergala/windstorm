@@ -13,6 +13,7 @@ XVisualInfo *vi;
 char *errorMsg;
 
 typedef Window WindstormWindow;
+typedef GLXContext WindstormContext;
 
 int errorHandler(Display *display, XErrorEvent *event) {
 
@@ -103,7 +104,33 @@ void WindstormCloseWindow(WindstormWindow window) {
 	errno = 0;
 }
 
+WindstormContext WindstormCreateContext() {
+
+	GLXContext context = glXCreateContext(display, vi, NULL, True);
+	if(context == NULL) {
+		errorMsg = "could not create OpenGL context";
+		errno = -1;
+		return NULL;
+	}
+
+	errno = 0;
+	return context;
+}
+
+void WindstormMakeContextCurrent(WindstormWindow window, WindstormContext context) {
+
+	if(glXMakeCurrent(display, window, context) == False) {
+		errorMsg = "could not make OpenGL context current";
+		errno = -1;
+		return;
+	}
+
+	errno = 0;
+	return;
+}
+
 void WindstormStop() {
 
 	XCloseDisplay(display);
+	errno = 0;
 }

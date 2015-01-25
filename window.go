@@ -8,6 +8,7 @@ type Window struct {
 	width, height int
 	title         string
 	cWin          cWindow
+	cCont         cContext
 }
 
 func NewWindow(width, height int, title string) (Window, error) {
@@ -70,6 +71,21 @@ func (window *Window) Close() error {
 func (window *Window) UpdateEvents() error {
 
 	err := cUpdateEvents(window.cWin)
+
+	return err
+}
+
+func (window *Window) CreateContext() error {
+
+	var err error
+	window.cCont, err = cCreateContext()
+
+	return err
+}
+
+func (window *Window) MakeContextCurrent() error {
+
+	err := cMakeContextCurrent(window.cWin, window.cCont)
 
 	return err
 }
