@@ -64,6 +64,14 @@ func mouseMoveEvent(x, y int, window C.WindstormWindow) {
 	}
 }
 
+//export focusEvent
+func focusEvent(focused int, window C.WindstormWindow) {
+
+	if obj, ok := windows[cWindow(window)]; ok {
+		obj.onFocus(focused == 1)
+	}
+}
+
 func cNewWindow(width, height int, title string) (cWindow, error) {
 
 	window, err := C.WindstormNewWindow(C.int(width), C.int(height), C.CString(title))
