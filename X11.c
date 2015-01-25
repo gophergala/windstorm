@@ -62,6 +62,9 @@ WindstormWindow WindstormNewWindow(int width, int height, char *title) {
 
 	XSetStandardProperties(display, window, title, title, None, NULL, 0, NULL);
 
+	Atom wmDeleteWindow = XInternAtom(display, "WM_DELETE_WINDOW", False);
+	XSetWMProtocols(display, window, &wmDeleteWindow, 1);
+
 	errno = 0;
 
 	return window;
@@ -122,8 +125,8 @@ void WindstormUpdateEvents(WindstormWindow window) {
 	while(XCheckIfEvent(display, &event, predicateFunc, NULL)) {
 		switch(event.type) {
 		case ClientMessage:
-			XDestroyWindow(display, window);
-			lastKeyReleased = -1;
+			printf("Close Event\n");
+			closeEvent(window);
 			break;
 		case KeyPress:
 			// The lastKeyReleased value will be the value of the last key
@@ -152,18 +155,23 @@ void WindstormUpdateEvents(WindstormWindow window) {
 			break;
 		case MotionNotify:
 			mouseMoveEvent(event.xmotion.x, attribs.height - event.xmotion.y, window);
+			lastKeyReleased = -1;
 			break;
 		case ButtonPress:
 			mouseButtonEvent(event.xbutton.button, Press, window);
+			lastKeyReleased = -1;
 			break;
 		case ButtonRelease:
 			mouseButtonEvent(event.xbutton.button, Release, window);
+			lastKeyReleased = -1;
 			break;
 		case FocusIn:
 			focusEvent(1, window);
+			lastKeyReleased = -1;
 			break;
 		case FocusOut:
 			focusEvent(0, window);
+			lastKeyReleased = -1;
 			break;
 		}
 	}

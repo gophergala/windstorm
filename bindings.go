@@ -38,6 +38,14 @@ func cInit() error {
 	return nil
 }
 
+//export closeEvent
+func closeEvent(window C.WindstormWindow) {
+
+	if obj, ok := windows[cWindow(window)]; ok {
+		obj.onClose()
+	}
+}
+
 //export resizeEvent
 func resizeEvent(width, height int, window C.WindstormWindow) {
 

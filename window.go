@@ -14,7 +14,9 @@ type Window struct {
 	mouseX, mouseY    int
 	mouseButtonStates map[MouseButton]Action
 	focused           bool
+	shouldClose       bool
 
+	OnClose       chan CloseEvent
 	OnResize      chan ResizeEvent
 	OnKeyboard    chan KeyboardEvent
 	OnMouseMove   chan MouseMoveEvent
@@ -45,6 +47,7 @@ func NewWindow(width, height int, title string) (Window, error) {
 	window.keyStates = make(map[Key]Action)
 	window.mouseButtonStates = make(map[MouseButton]Action)
 
+	window.OnClose = make(chan CloseEvent, 256)
 	window.OnResize = make(chan ResizeEvent, 256)
 	window.OnKeyboard = make(chan KeyboardEvent, 256)
 	window.OnMouseMove = make(chan MouseMoveEvent, 256)
@@ -145,6 +148,11 @@ func (window *Window) InFocus() bool {
 	return window.focused
 }
 
+func (window *Window) ShouldClose() bool {
+
+	return window.shouldClose
+}
+
 func (window *Window) CreateContext() error {
 
 	var err error
@@ -165,6 +173,16 @@ func (window *Window) SwapBuffers() error {
 	err := cSwapBuffers(window.cWin)
 
 	return err
+}
+
+func (window *Window) onClose() {
+
+	window.shouldClose = true
+
+	select {
+	case window.OnClose <- CloseEvent{}:
+	default:
+	}
 }
 
 func (window *Window) onResize(width, height int) {

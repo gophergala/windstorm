@@ -1,5 +1,8 @@
 package windstorm
 
+type CloseEvent struct {
+}
+
 type ResizeEvent struct {
 	Width  int
 	Height int
