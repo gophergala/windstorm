@@ -1,3 +1,5 @@
+// +build linux
+
 #include <X11/Xlib.h>
 #include <errno.h>
 #include <GL/glx.h>
