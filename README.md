@@ -40,6 +40,13 @@ As far as drawing is concerned, you're given a OpenGL context to do anything
 you'd like with. Just make sure to run SwapBuffers to let Windstorm know you're
 done drawing a frame.
 
+TODO
+----
+ - Windows support (In progress)
+ - Mac support
+ - Joystick input
+ - Fullscreen support
+
 Gopher Gala Info
 ----------------
 Full disclosure: Work on this project is based on an earlier attempt at the
