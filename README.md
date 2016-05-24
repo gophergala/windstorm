@@ -5,21 +5,10 @@ contexts and handles user input.
 
 Why?
 ----
-Usually, Go programs use GLFW bindings to create windows and get user input.
-This approach can work very well, and there are some great bindings out there
-like [this one](http://github.com/go-gl/glfw3) that make it a fairly painless
-process. However, bindings, by necessity, don't fit in with the Go way of doing
-things. Bindings are not Go-gettable because they require C libraries to be
-installed first and their design generally leans towards a more C-like
-approach. Windstorm still requires cgo because it needs to interact with the
-libraries that the operating system supplies for window management, but it's
-still one less level of abstraction between Go programs and creating windows.
-
-Windstorm hopes to offer an alternative to bindings that is Go-gettable (for
-the most part, more details below) and more similar to the way Go programmers
-expect to interact with libraries. It will be a while before Windstorm reaches
-GLFW's level of feature-completeness and stability, but I believe it's well
-worth the effort.
+When I created this, there weren't as many great Go solutions to this problem.
+If you need a window creation library, you should use
+[the shiny library](http://golang.org/x/exp/shiny), which is actively
+developed by some big names in the Go community.
 
 Installation
 ------------
