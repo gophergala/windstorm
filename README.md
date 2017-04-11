@@ -10,6 +10,9 @@ If you need a window creation library, you should use
 [the shiny library](http://golang.org/x/exp/shiny), which is actively
 developed by some big names in the Go community.
 
+Because there are better solutions to this problem now, and because this library
+never caught on anyway, I am **no longer maintaining this library**.
+
 Installation
 ------------
 In many cases, Windstorm can be installed with a simple call to "go get".
